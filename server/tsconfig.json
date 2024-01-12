@@ -3,8 +3,14 @@
     /* Base Options: */
     "baseUrl": "./src",
     "paths": {
-      "@/*": [
-        "./src/*"
+      "@/lib/*": [
+        "lib/*"
+      ],
+      "@/modules/*": [
+        "modules/*"
+      ],
+      "@/shared/*": [
+        "shared/*"
       ],
     },
     "esModuleInterop": true,
