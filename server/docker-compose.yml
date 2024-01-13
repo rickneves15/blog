@@ -11,3 +11,22 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: blog
+    networks:
+      - blog-network
+  
+  redis:
+    image: redis:7.2.3-alpine
+    container_name: redis
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli -h localhost -p 6379 PING']
+      interval: 1s
+      timeout: 30s
+    ports:
+      - '6379:6379'
+    networks:
+      - blog-network
+
+networks:
+  blog-network:
+    driver: bridge

@@ -2,12 +2,16 @@ import { z } from 'zod'
 
 import {
   AppConfigValidationSchema,
+  JWTConfigValidationSchema,
   PrismaConfigValidationSchema,
+  RedisConfigValidationSchema,
 } from './configs'
 
 export const configSchema = z.union([
   AppConfigValidationSchema,
+  JWTConfigValidationSchema,
   PrismaConfigValidationSchema,
+  RedisConfigValidationSchema,
 ])
 
 export type ConfigType = z.infer<typeof configSchema>

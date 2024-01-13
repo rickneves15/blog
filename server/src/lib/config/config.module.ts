@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common'
 import { ConfigService, ConfigModule as NestConfigModule } from '@nestjs/config'
 
 import { ConfigValidate } from './config.interface'
-import { app, prisma } from './configs'
+import { app, jwt, prisma, redis } from './configs'
 
 @Module({
   imports: [
     NestConfigModule.forRoot({
       envFilePath: [`${process.cwd()}/.env`],
-      load: [app, prisma],
+      load: [app, jwt, prisma, redis],
       cache: true,
       isGlobal: true,
       expandVariables: true,
