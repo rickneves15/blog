@@ -11,6 +11,13 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService<Configs, true>)
 
+  app.enableCors({
+    credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    maxAge: 3600,
+    origin: '*',
+  })
+
   const host = configService.get('app.HOST')
   const port = configService.get('app.PORT')
 
