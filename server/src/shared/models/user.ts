@@ -10,6 +10,4 @@ export const userModel = z.object({
   updatedAt: z.date(),
 })
 
-export type User = z.infer<typeof userModel>
-
-export class UserDto extends createZodDto(userModel) {}
+export class userDto extends createZodDto(userModel) {}

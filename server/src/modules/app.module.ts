@@ -5,10 +5,11 @@ import { APP_PIPE } from '@nestjs/core'
 import { ZodValidationPipe } from 'nestjs-zod'
 import { AppController } from './app.controller'
 import { AuthModule } from './auth/auth.module'
+import { UploadModule } from './upload/upload.module'
 import { UsersModule } from './users/users.module'
 
 @Module({
-  imports: [AuthModule, LibModule, UsersModule],
+  imports: [AuthModule, LibModule, UploadModule, UsersModule],
   controllers: [AppController],
   providers: [
     {

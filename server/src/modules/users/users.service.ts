@@ -1,6 +1,6 @@
 import { BcryptService } from '@/lib/bcrypt/bcrypt.service'
 import { PrismaService } from '@/lib/database/prisma.service'
-import { UserDto } from '@/shared/models'
+import { userDto } from '@/shared/models'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { UserEditDto, UserEditResponseDto } from './dto/user-edit'
 
@@ -11,7 +11,7 @@ export class UsersService {
     private readonly bcryptService: BcryptService,
   ) {}
 
-  async findByEmail(email: string): Promise<UserDto> {
+  async findByEmail(email: string): Promise<userDto> {
     const user = await this.prisma.user.findFirst({
       where: {
         email,
@@ -25,7 +25,7 @@ export class UsersService {
     return user
   }
 
-  async findById(id: string): Promise<UserDto> {
+  async findById(id: string): Promise<userDto> {
     const user = await this.prisma.user.findFirst({
       where: {
         id,
