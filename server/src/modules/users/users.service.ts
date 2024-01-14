@@ -2,8 +2,7 @@ import { BcryptService } from '@/lib/bcrypt/bcrypt.service'
 import { PrismaService } from '@/lib/database/prisma.service'
 import { UserDto } from '@/shared/models'
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { UserWithoutPassword } from './dto/me.dto'
-import { UserEditDto } from './dto/user-edit'
+import { UserEditDto, UserEditResponseDto } from './dto/user-edit'
 
 @Injectable()
 export class UsersService {
@@ -43,7 +42,11 @@ export class UsersService {
   async edit(
     userId: string,
     data: Partial<UserEditDto>,
-  ): Promise<UserWithoutPassword> {
+  ): Promise<UserEditResponseDto> {
+    const userUpdated: Partial<UserEditDto> = {
+      name: data.name,
+      email: data.email,
+    }
     const user = await this.findById(userId)
 
     if (!user) {
@@ -52,14 +55,12 @@ export class UsersService {
 
     if (data.password) {
       const passwordHash = await this.bcryptService.hash(data.password)
-      data.password = passwordHash
+      userUpdated.password = passwordHash
     }
 
-    const userUpdated = await this.prisma.user.update({
-      data,
+    return await this.prisma.user.update({
+      data: userUpdated,
       where: { id: userId },
     })
-
-    return userUpdated
   }
 }
