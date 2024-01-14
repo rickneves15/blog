@@ -1,5 +1,5 @@
 export type JwtPayload = {
-  user: USerWithoutPassword
+  user: UserWithoutPassword
   sub: string
   iat: number
   exp: number

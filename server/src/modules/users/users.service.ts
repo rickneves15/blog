@@ -33,4 +33,8 @@ export class UsersService {
 
     return user!
   }
+
+  async edit(): Promise<UserDto>{
+
+  }
 }
