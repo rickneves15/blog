@@ -1,9 +1,10 @@
+import { Container } from '@/components/Container'
 import { SignInForm } from '@/components/pages/signIn/SignInForm'
 
 export default function SignIn() {
   return (
-    <section className="flex min-h-screen overflow-hidden justify-center items-center">
+    <Container className="pt-12">
       <SignInForm />
-    </section>
+    </Container>
   )
 }
