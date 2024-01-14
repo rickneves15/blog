@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Toaster } from 'sonner'
 
-import { ReactQueryProvider } from '@/providers/ReactQueryProvider'
+import { AppProvider } from '@/providers/AppProvider'
+
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -17,13 +19,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body
-        className={`${inter.className} text-primary bg-primary relative mx-auto mb-20 flex w-full max-w-screen-xl flex-col px-[10vw] md:px-[5vw]`}
+        className={`${inter.className} text-primary bg-primary relative mx-auto mb-20 flex w-full max-w-screen-xl min-h-screen overflow-hidden flex-col px-[10vw] md:px-[5vw]`}
+        suppressHydrationWarning
       >
-        <ReactQueryProvider>
+        <AppProvider>
           <main>{children}</main>
-        </ReactQueryProvider>
+          <Toaster richColors />
+        </AppProvider>
       </body>
     </html>
   )
