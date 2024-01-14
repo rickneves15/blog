@@ -17,7 +17,6 @@ export class CacheConfigService implements CacheOptionsFactory {
     const redisOptions: any = {
       host: this.configService.get('redis.REDIS_HOST') as string,
       port: this.configService.get('redis.REDIS_PORT') as number,
-      ttl: this.configService.get('redis.REDIS_HTTP_CACHE_TTL') as number,
       max: this.configService.get('redis.REDIS_MAX') as number,
       // Include the Redis password if it is configured.
       ...(this.configService.get('redis.REDIS_PASSWORD')

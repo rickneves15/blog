@@ -58,7 +58,7 @@ export class CacheService {
    * @param {number} ttl - The optional time-to-live (TTL) for the value in seconds. If not provided, the value will be cached indefinitely.
    * @return {void} - This function does not return anything.
    */
-  public set(key: TCacheKey, value: string, ttl?: number | undefined) {
+  public set(key: TCacheKey, value: TCacheKey, ttl?: number) {
     return this.cache.set(key, value, ttl || 0)
   }
 
@@ -70,5 +70,19 @@ export class CacheService {
    */
   public delete(key: TCacheKey) {
     return this.cache.del(key)
+  }
+
+  /**
+   * Validates a key-value pair.
+   *
+   * @param {string} key - The key to validate.
+   * @param {string} value - The value to validate.
+   * @return {Promise<boolean>} A promise that resolves to true if the stored value matches the provided value, otherwise false.
+   */
+  async validate(key: TCacheKey, value: string): Promise<boolean> {
+    console.log(await this.redisClient.get(key))
+    console.log(value)
+    const storedValue = await this.redisClient.get(key)
+    return storedValue === value
   }
 }
