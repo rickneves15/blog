@@ -6,9 +6,7 @@ import {
   HttpStatus,
   Post,
   Request,
-  UseGuards,
 } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
 
 import { MeDto, MeSchema } from './dto/me.dto'
 import {
@@ -18,7 +16,6 @@ import {
 } from './dto/user-edit'
 import { UsersService } from './users.service'
 
-@UseGuards(AuthGuard())
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
