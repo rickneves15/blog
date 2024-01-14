@@ -28,6 +28,7 @@ import { UsersService } from '@/services/userService'
 export type AuthContextDataProps = {
   user: UserWithoutPassword
   setUser: Dispatch<SetStateAction<UserWithoutPassword>>
+  isLogged: boolean
   isLoading: boolean
   signIn: (data: SignInForm) => Promise<void>
   signUp: (data: SignUpForm) => Promise<void>
@@ -47,6 +48,7 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserWithoutPassword>(
     {} as UserWithoutPassword,
   )
+  const [isLogged, setIsLogged] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const signIn = useCallback(
@@ -63,20 +65,37 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
 
           const response = await UsersService.me()
 
-          setUser(response.data)
-
-          setCookie(undefined, 'blog:token', accessToken, {
-            maxAge: 60 * 60 * 24 * 3,
-            path: '/',
-          })
-
           toast.success('Login Efetuado com sucesso. Redirecionando...', {
             duration: 1500,
-            onAutoClose: () => router.push('/profile'),
+            onAutoClose: () => {
+              setIsLogged(true)
+              setUser(response.data)
+
+              setCookie(undefined, 'blog:token', accessToken, {
+                maxAge: 60 * 60 * 24 * 3,
+                path: '/',
+              })
+              router.push('/profile')
+            },
           })
         }
       } catch (error) {
-        throw new Error('Não foi possível autenticar')
+        if (error instanceof AxiosError) {
+          const responseError = error.response?.data as AxiosError<ErrorApi>
+          if (responseError.message === 'Invalid credentials') {
+            toast.error('Credenciais inválidas.', {
+              duration: 1500,
+            })
+          } else {
+            toast.error('Não foi possível se autenticar. Tente novamente...', {
+              duration: 1500,
+            })
+          }
+        } else {
+          toast.error('Houve um erro. Tente novamente mais tarde.', {
+            duration: 1500,
+          })
+        }
       } finally {
         setIsLoading(false)
       }
@@ -112,7 +131,6 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
           toast.error('Houve um erro. Tente novamente mais tarde.', {
             duration: 1500,
           })
-          throw new Error('Não foi possível se registrar')
         }
       } finally {
         setIsLoading(false)
@@ -125,6 +143,8 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
     try {
       destroyCookie(undefined, 'blog:token')
       api.defaults.headers.authorization = null
+      setUser({} as UserWithoutPassword)
+      setIsLogged(false)
       await AuthService.signOut()
       router.push('/')
 
@@ -133,13 +153,18 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
   }, [router])
 
   const loadUserStorageData = async () => {
-    const { 'blog:token': token } = parseCookies()
+    try {
+      const { 'blog:token': token } = parseCookies()
 
-    if (token) {
-      api.defaults.headers.authorization = `Bearer ${token}`
-      const response = await UsersService.me()
+      if (token) {
+        api.defaults.headers.authorization = `Bearer ${token}`
+        const response = await UsersService.me()
 
-      setUser(response.data)
+        setIsLogged(true)
+        setUser(response.data)
+      }
+    } catch (error) {
+      signOut()
     }
   }
 
@@ -149,7 +174,7 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ user, setUser, isLoading, signIn, signUp, signOut }}
+      value={{ user, setUser, isLogged, isLoading, signIn, signUp, signOut }}
     >
       {children}
     </AuthContext.Provider>
