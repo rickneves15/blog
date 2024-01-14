@@ -4,6 +4,10 @@ import { v4 as uuidv4 } from 'uuid'
 
 export const DESTINATION_UPLOAD = `${process.cwd()}/uploads`
 
+type validMimeType = 'image/png' | 'image/jpg' | 'image/jpeg'
+
+const validMimeTypes: validMimeType[] = ['image/png', 'image/jpg', 'image/jpeg']
+
 export const multerConfig = {
   storage: diskStorage({
     destination: DESTINATION_UPLOAD,
@@ -15,4 +19,9 @@ export const multerConfig = {
       cb(null, `${fileName}${extension}`)
     },
   }),
+
+  fileFilter: (_, file, cb) => {
+    const allowedMimeTypes: validMimeType[] = validMimeTypes
+    allowedMimeTypes.includes(file.mimetype) ? cb(null, true) : cb(null, false)
+  },
 }
