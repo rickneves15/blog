@@ -4,7 +4,9 @@ import { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import {
+  Dispatch,
   ReactNode,
+  SetStateAction,
   createContext,
   useCallback,
   useContext,
@@ -25,6 +27,7 @@ import { UsersService } from '@/services/userService'
 
 export type AuthContextDataProps = {
   user: UserWithoutPassword
+  setUser: Dispatch<SetStateAction<UserWithoutPassword>>
   isLoading: boolean
   signIn: (data: SignInForm) => Promise<void>
   signUp: (data: SignUpForm) => Promise<void>
@@ -46,71 +49,77 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
   )
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const signIn = useCallback(async (data: SignInForm) => {
-    try {
-      setIsLoading(true)
-      const response = await AuthService.signIn(data)
-      const {
-        data: { accessToken },
-      } = response
+  const signIn = useCallback(
+    async (data: SignInForm) => {
+      try {
+        setIsLoading(true)
+        const response = await AuthService.signIn(data)
+        const {
+          data: { accessToken },
+        } = response
 
-      if (response.status === 200) {
-        api.defaults.headers.authorization = `Bearer ${accessToken}`
+        if (response.status === 200) {
+          api.defaults.headers.authorization = `Bearer ${accessToken}`
 
-        const response = await UsersService.me()
+          const response = await UsersService.me()
 
-        setUser(response.data)
+          setUser(response.data)
 
-        setCookie(undefined, 'blog:token', accessToken, {
-          maxAge: 60 * 60 * 24 * 3,
-          path: '/',
-        })
-
-        toast.success('Login Efetuado com sucesso. Redirecionando...', {
-          duration: 1500,
-          onAutoClose: () => router.push('/profile'),
-        })
-      }
-    } catch (error) {
-      throw new Error('Não foi possível autenticar')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
-  const signUp = useCallback(async (data: SignUpForm) => {
-    try {
-      setIsLoading(true)
-      const response = await AuthService.signUp(data)
-
-      if (response.status === 201) {
-        toast.success('Registro Efetuado com sucesso. Redirecionando...', {
-          duration: 1500,
-          onAutoClose: () => router.push('/sign-in'),
-        })
-      }
-    } catch (error: any) {
-      if (error instanceof AxiosError) {
-        const responseError = error.response?.data as AxiosError<ErrorApi>
-        if (responseError.message === 'User already exists') {
-          toast.error('Usuário ja existe.', {
-            duration: 1500,
+          setCookie(undefined, 'blog:token', accessToken, {
+            maxAge: 60 * 60 * 24 * 3,
+            path: '/',
           })
-        } else {
-          toast.error('Não foi possível se registrar. Tente novamente...', {
+
+          toast.success('Login Efetuado com sucesso. Redirecionando...', {
             duration: 1500,
+            onAutoClose: () => router.push('/profile'),
           })
         }
-      } else {
-        toast.error('Houve um erro. Tente novamente mais tarde.', {
-          duration: 1500,
-        })
-        throw new Error('Não foi possível se registrar')
+      } catch (error) {
+        throw new Error('Não foi possível autenticar')
+      } finally {
+        setIsLoading(false)
       }
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+    },
+    [router],
+  )
+
+  const signUp = useCallback(
+    async (data: SignUpForm) => {
+      try {
+        setIsLoading(true)
+        const response = await AuthService.signUp(data)
+
+        if (response.status === 201) {
+          toast.success('Registro Efetuado com sucesso. Redirecionando...', {
+            duration: 1500,
+            onAutoClose: () => router.push('/sign-in'),
+          })
+        }
+      } catch (error: any) {
+        if (error instanceof AxiosError) {
+          const responseError = error.response?.data as AxiosError<ErrorApi>
+          if (responseError.message === 'User already exists') {
+            toast.error('Usuário ja existe.', {
+              duration: 1500,
+            })
+          } else {
+            toast.error('Não foi possível se registrar. Tente novamente...', {
+              duration: 1500,
+            })
+          }
+        } else {
+          toast.error('Houve um erro. Tente novamente mais tarde.', {
+            duration: 1500,
+          })
+          throw new Error('Não foi possível se registrar')
+        }
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [router],
+  )
 
   const signOut = useCallback(async () => {
     try {
@@ -121,25 +130,27 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
 
       // eslint-disable-next-line prettier/prettier
     } catch (error) { }
-  }, [])
+  }, [router])
 
-  const loadUserStorageData = useCallback(() => {
+  const loadUserStorageData = async () => {
     const { 'blog:token': token } = parseCookies()
 
     if (token) {
-      const userLogged = JSON.parse(token) as UserWithoutPassword
-      api.defaults.headers.authorization = `Bearer ${userLogged.accessToken}`
+      api.defaults.headers.authorization = `Bearer ${token}`
+      const response = await UsersService.me()
 
-      setUser(userLogged)
+      setUser(response.data)
     }
-  }, [])
+  }
 
   useEffect(() => {
     loadUserStorageData()
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signOut }}>
+    <AuthContext.Provider
+      value={{ user, setUser, isLoading, signIn, signUp, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   )
