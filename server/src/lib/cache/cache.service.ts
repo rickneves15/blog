@@ -71,18 +71,4 @@ export class CacheService {
   public delete(key: TCacheKey) {
     return this.cache.del(key)
   }
-
-  /**
-   * Validates a key-value pair.
-   *
-   * @param {string} key - The key to validate.
-   * @param {string} value - The value to validate.
-   * @return {Promise<boolean>} A promise that resolves to true if the stored value matches the provided value, otherwise false.
-   */
-  async validate(key: TCacheKey, value: string): Promise<boolean> {
-    console.log(await this.redisClient.get(key))
-    console.log(value)
-    const storedValue = await this.redisClient.get(key)
-    return storedValue === value
-  }
 }
