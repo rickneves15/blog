@@ -3,12 +3,15 @@ import {
   Post,
   Req,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { multerConfig } from './multer.config'
 import { UploadService } from './upload.service'
 
+@UseGuards(AuthGuard())
 @Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
