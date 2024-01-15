@@ -116,4 +116,9 @@ export class PostController {
   ) {
     return this.postService.remove(request.user.id, id)
   }
+
+  @Get('/report')
+  report() {
+    return this.postService.report()
+  }
 }

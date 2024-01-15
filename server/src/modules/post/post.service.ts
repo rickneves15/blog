@@ -128,4 +128,16 @@ export class PostService {
 
     return true
   }
+
+  async report() {
+    return await this.prisma.post.findMany({
+      select: {
+        title: true,
+        description: true,
+        _count: {
+          select: { Comment: true },
+        },
+      },
+    })
+  }
 }
