@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 
-import Header from '@/components/Header'
+import { Header } from '@/components/Header'
 import { AppProvider } from '@/providers/AppProvider'
 import './globals.css'
 
@@ -21,12 +21,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${inter.className} text-primary-foreground bg-primary relative mx-auto mb-20 flex w-full max-w-screen-xl min-h-screen overflow-hidden flex-col px-[10vw] md:px-[5vw]`}
+        className={`${inter.className} text-primary-foreground bg-primary mx-auto mb-20 flex w-full max-w-screen-xl flex-col`}
         suppressHydrationWarning
       >
         <AppProvider>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 px-[10vw] max-h-screen">{children}</main>
           <Toaster richColors />
         </AppProvider>
       </body>

@@ -43,6 +43,7 @@ model user {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Post      Post[]
 }
 
 model file {
@@ -52,6 +53,26 @@ model file {
   contentLength Int
   contentType   String
   url           String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Post      Post[]
+}
+
+model Post {
+  id String @id @default(uuid())
+
+  title          String
+  description    String
+  vizualizations Int?   @default(0)
+  unlikes        Int?   @default(0)
+  likes          Int?   @default(0)
+
+  user   user   @relation(fields: [userId], references: [id])
+  userId String
+
+  file   file   @relation(fields: [fileId], references: [id])
+  fileId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
