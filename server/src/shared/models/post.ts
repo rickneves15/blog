@@ -1,8 +1,10 @@
 import { createZodDto } from 'nestjs-zod/dto'
 import * as z from 'nestjs-zod/z'
 import {
+  CompleteComment,
   Completefile,
   Completeuser,
+  RelatedCommentModel,
   RelatedfileModel,
   RelateduserModel,
 } from './index'
@@ -25,6 +27,7 @@ export class PostDto extends createZodDto(PostModel) {}
 export interface CompletePost extends z.infer<typeof PostModel> {
   user: Completeuser
   file: Completefile
+  Comment: CompleteComment[]
 }
 
 /**
@@ -36,5 +39,6 @@ export const RelatedPostModel: z.ZodSchema<CompletePost> = z.lazy(() =>
   PostModel.extend({
     user: RelateduserModel,
     file: RelatedfileModel,
+    Comment: RelatedCommentModel.array(),
   }),
 )

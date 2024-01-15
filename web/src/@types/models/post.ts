@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { CompleteComment, CompleteCommentSchema } from './comment'
 import { FileBase, FileBaseSchema } from './file'
 import { UserWithoutPassword, UserWithoutPasswordSchema } from './user'
 
@@ -24,12 +25,14 @@ export type PostBase = z.infer<typeof PostBase>
 export interface CompletePost extends z.infer<typeof PostBase> {
   user: UserWithoutPassword
   file: FileBase
+  Comment: CompleteComment[]
 }
 
 export const CompletePostSchema: z.ZodSchema<CompletePost> = z.lazy(() =>
   PostBase.extend({
     user: UserWithoutPasswordSchema,
     file: FileBaseSchema,
+    Comment: z.array(CompleteCommentSchema),
   }),
 )
 

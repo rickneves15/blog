@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 
-import { Public } from '@/shared/decorators'
+import { ActiveUser, Public } from '@/shared/decorators'
 import { multerConfig } from '../upload/multer.config'
 import { UploadService } from '../upload/upload.service'
 import { CreatePostBodyDto } from './dto/create-post.dto'
@@ -78,6 +78,7 @@ export class PostController {
   async update(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Request() request: any,
+    @ActiveUser('id') userId: string,
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: string,
     @Body() data: UpdatePostBodyDto,
@@ -101,7 +102,7 @@ export class PostController {
       }
     }
 
-    return this.postService.update(id, {
+    return this.postService.update(userId, id, {
       ...post,
       userId: request.user.id,
     })

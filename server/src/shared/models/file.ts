@@ -1,6 +1,6 @@
-import * as z from "nestjs-zod/z"
-import { createZodDto } from "nestjs-zod/dto"
-import { CompletePost, RelatedPostModel } from "./index"
+import { createZodDto } from 'nestjs-zod/dto'
+import * as z from 'nestjs-zod/z'
+import { CompletePost, RelatedPostModel } from './index'
 
 export const fileModel = z.object({
   id: z.string(),
@@ -12,8 +12,7 @@ export const fileModel = z.object({
   updatedAt: z.date(),
 })
 
-export class fileDto extends createZodDto(fileModel) {
-}
+export class fileDto extends createZodDto(fileModel) {}
 
 export interface Completefile extends z.infer<typeof fileModel> {
   Post: CompletePost[]
@@ -24,6 +23,8 @@ export interface Completefile extends z.infer<typeof fileModel> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const RelatedfileModel: z.ZodSchema<Completefile> = z.lazy(() => fileModel.extend({
-  Post: RelatedPostModel.array(),
-}))
+export const RelatedfileModel: z.ZodSchema<Completefile> = z.lazy(() =>
+  fileModel.extend({
+    Post: RelatedPostModel.array(),
+  }),
+)

@@ -64,6 +64,22 @@ export class PostService {
             url: true,
           },
         },
+        Comment: {
+          where: {
+            isDeleted: false,
+          },
+          select: {
+            id: true,
+            description: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
       },
       where: {
         id,
@@ -77,7 +93,11 @@ export class PostService {
     return post!
   }
 
-  async update(id: string, data: UpdatePostDto) {
+  async update(userId: string, id: string, data: UpdatePostDto) {
+    if (!(await this.isPostBelongsToUser(userId, id))) {
+      throw new BadRequestException('Post does not belong to user')
+    }
+
     return await this.prisma.post.update({
       where: {
         id,

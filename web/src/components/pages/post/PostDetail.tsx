@@ -14,6 +14,9 @@ import { Icons } from '@/components/ui/icons'
 import { useAuth } from '@/hooks/auth'
 import { PostService } from '@/services/postService'
 
+import { CommentsList } from './Comment/CommentsList'
+import { NewCommentForm } from './Comment/NewCommentForm'
+
 type PostDetailProps = {
   postId: string
 }
@@ -68,7 +71,7 @@ export function PostDetail({ postId }: PostDetailProps) {
 
   if (data) {
     return (
-      <article className="max-h-screen mt-4 flex flex-col items-center md:mt-20">
+      <article className="mt-4 flex flex-col items-center md:mt-20">
         <div className="relative aspect-[3/2] w-[90vw] max-w-[900px]">
           <Image
             src={data.file.url}
@@ -131,6 +134,11 @@ export function PostDetail({ postId }: PostDetailProps) {
           <p className="text-lg break-all whitespace-pre-wrap">
             {data.description}
           </p>
+
+          <div className="mx-10">
+            <NewCommentForm postId={data.id} />
+            <CommentsList comments={data.Comment} postId={data.id} />
+          </div>
         </div>
       </article>
     )

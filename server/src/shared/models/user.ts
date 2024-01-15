@@ -1,6 +1,11 @@
-import * as z from "nestjs-zod/z"
-import { createZodDto } from "nestjs-zod/dto"
-import { CompletePost, RelatedPostModel } from "./index"
+import { createZodDto } from 'nestjs-zod/dto'
+import * as z from 'nestjs-zod/z'
+import {
+  CompleteComment,
+  CompletePost,
+  RelatedCommentModel,
+  RelatedPostModel,
+} from './index'
 
 export const userModel = z.object({
   id: z.string(),
@@ -11,11 +16,11 @@ export const userModel = z.object({
   updatedAt: z.date(),
 })
 
-export class userDto extends createZodDto(userModel) {
-}
+export class userDto extends createZodDto(userModel) {}
 
 export interface Completeuser extends z.infer<typeof userModel> {
   Post: CompletePost[]
+  Comment: CompleteComment[]
 }
 
 /**
@@ -23,6 +28,9 @@ export interface Completeuser extends z.infer<typeof userModel> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const RelateduserModel: z.ZodSchema<Completeuser> = z.lazy(() => userModel.extend({
-  Post: RelatedPostModel.array(),
-}))
+export const RelateduserModel: z.ZodSchema<Completeuser> = z.lazy(() =>
+  userModel.extend({
+    Post: RelatedPostModel.array(),
+    Comment: RelatedCommentModel.array(),
+  }),
+)
