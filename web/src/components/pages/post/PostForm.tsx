@@ -104,18 +104,6 @@ export function PostForm({ postId = null }: PostFormProps) {
                   </p>
                 )}
               </div>
-              {/* <FormField
-                control={form.control}
-                name="file"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input {...field} type="file" accept="image/*" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
               <FormField
                 control={form.control}
                 name="title"
@@ -141,10 +129,6 @@ export function PostForm({ postId = null }: PostFormProps) {
                 )}
               />
               <Button className="w-full mt-4" type="submit">
-                {/* {isLoading && (
-                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                )} */}
-
                 {postId ? 'Editar' : 'Criar'}
               </Button>
             </CardContent>
@@ -154,3 +138,4 @@ export function PostForm({ postId = null }: PostFormProps) {
     </Transition>
   )
 }
+
