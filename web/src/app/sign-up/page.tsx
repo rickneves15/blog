@@ -1,5 +1,5 @@
 import { Container } from '@/components/Container'
-import { SignUpForm } from '@/components/pages/signIn/SignUpForm'
+import { SignUpForm } from '@/components/pages/signUp/SignUpForm'
 
 export default function SignUp() {
   return (

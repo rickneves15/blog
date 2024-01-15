@@ -38,7 +38,7 @@ export function SignUpForm() {
 
   return (
     <Transition
-      className="mx-auto my-16 max-w-md space-y-4"
+      className="flex justify-center items-center"
       appear={true}
       show={true}
       enter="transition-all ease-in-out duration-500 delay-[200ms]"

@@ -60,7 +60,7 @@ export function ProfileEditForm() {
 
   return (
     <Transition
-      className="mx-auto my-16 max-w-md space-y-4"
+      className="flex justify-center items-center"
       appear={true}
       show={true}
       enter="transition-all ease-in-out duration-500 delay-[200ms]"
@@ -74,7 +74,7 @@ export function ProfileEditForm() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Card className="w-[350px]">
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl">Profile</CardTitle>
+              <CardTitle className="text-2xl">Perfil</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4">
               <FormField
