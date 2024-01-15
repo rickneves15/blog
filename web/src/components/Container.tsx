@@ -6,7 +6,7 @@ export function Container({
   ...rest
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <section className={cn('flex-1 min-h-screen', className)} {...rest}>
+    <section className={cn('flex-1 max-h-screen ', className)} {...rest}>
       {children}
     </section>
   )
